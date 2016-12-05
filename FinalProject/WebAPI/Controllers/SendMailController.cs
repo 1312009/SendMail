@@ -12,14 +12,26 @@ namespace SendMail.Controllers
     [RoutePrefix("api/SendMail")]
     public class SendMailController : ApiController
     {
-        [Route("")]
+        [Route("Register")]
         [HttpGet]
-        public string Get(string email)
+        public string Register(string email)
         {
             string code = CreatePassword() ;
             MailMessage mailMessag = new MailMessage(ConfigurationManager.AppSettings.Get("Email"), email);
             mailMessag.Subject = "Gửi mã xác nhận";
             mailMessag.Body = "Mã xác nhận của bạn là: " + code;
+            SmtpClient client = new SmtpClient();
+            client.Send(mailMessag);
+            return code;
+        }
+        [Route("Forget")]
+        [HttpGet]
+        public string Forget(string email)
+        {
+            string code = CreatePassword();
+            MailMessage mailMessag = new MailMessage(ConfigurationManager.AppSettings.Get("Email"), email);
+            mailMessag.Subject = "Gửi mật khẩu mới";
+            mailMessag.Body = "Mật khẩu mới của bạn là: " + code;
             SmtpClient client = new SmtpClient();
             client.Send(mailMessag);
             return code;
